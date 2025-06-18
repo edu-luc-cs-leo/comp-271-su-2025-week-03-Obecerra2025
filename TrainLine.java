@@ -6,6 +6,8 @@ public class TrainLine {
     private String name;
     /** The head station of the train line */
     private Station head;
+    /** Missing the last station of the train line so we add this so it could be easier than looping */
+    private Station lastStation;
     /** Current number of stations in the line */
     private int numberOfStations;
 
@@ -13,6 +15,7 @@ public class TrainLine {
     public TrainLine(String name) {
         this.name = name;
         this.head = null;
+        this.lastStation = null;
         this.numberOfStations = 0;
     } // basic constructor
 
@@ -36,39 +39,60 @@ public class TrainLine {
         if (this.head == null) {
             // No stations exist in this line. Make this new station
             // the head station of the line
+            // Set both head and lastStation to the new station
             this.head = newStation;
+            this.lastStation = newStation;
         } else {
-            // The line has at least one station (the head station).
-            // Find the last station and make its next station the new one.
-            Station cursor = this.head;
-            while (cursor.hasNext()) {
-                cursor = cursor.getNext();
+            // If lastStation works we can add the new station
+            if (this.lastStation != null) {
+                this.lastStation.setNext(newStation); // connect last to new
+                this.lastStation = newStation; // update last
+            } else {
+                // The line has at least one station (the head station).
+                // Find the last station and make its next station the new one.
+                Station cursor = this.head;
+                while (cursor.hasNext()) {
+                    cursor = cursor.getNext(); 
+                }
+                // Cursor is now at the last station of the line
+                cursor.setNext(newStation);
+                this.lastStation = newStation;
             }
-            // Cursor is now at the last station of the line
-            cursor.setNext(newStation);
         }
-        this.numberOfStations = this.numberOfStations+1; 
-        // or this.numberOfStations++;
-        // or this.numberOfStatiosn += 1;
-    } // method add
+
+        this.numberOfStations++;   
+    }
 
     /**
      * Finds how many stations are in a train line
      * 
      * METHOD MADE OBSOLETE BY INTRODUCTING TrainLine.numberOfStations
      */
-    public int stationCounter() {
-        int counter = 0;
-        if (this.head != null) {
-            // Train line not empty
-            Station cursor = this.head;
-            while (cursor != null) {
-                counter = counter + 1;
-                cursor = cursor.getNext();
+    public int indexOf(String stationName) {
+        // Start at the first station in the line
+        Station cursor = this.head;
+        // keep track of the current potition
+        int index = 0;
+        // Go through each station in the train line
+        while (cursor != null) {
+            // If we find the correct name
+            if (cursor.getName().equals(stationName)) {
+                return index; // Return its position
             }
+
+            // Move to the next station
+            cursor = cursor.getNext();
+            index++; // update position
         }
-        return counter;
+
+        // If not found return -1
+        return -1;
     } // method countStations
+
+    public boolean contains(String stationName) {
+        // If index returns anything except -1 means the station is found
+        return this.indexOf(stationName) != -1;
+    }
 
 
     /**

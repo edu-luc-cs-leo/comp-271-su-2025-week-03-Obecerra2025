@@ -14,7 +14,7 @@ public class TrainLine_Implementation {
         test[1] = redLineSB.contains("Morse");
         test[2] = redLineSB.indexOf("Kimball") == -1;
         test[3] = !redLineSB.contains("Ridgeland");
-        TrainLine demo = new nfs_TrainLine();
+        TrainLine demo = new TrainLine();
         test[4] = demo.indexOf("Loyola") == -1;
         test[5] = !demo.contains("Granville");
         boolean cumulativeTest = true;
